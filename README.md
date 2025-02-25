@@ -33,6 +33,6 @@ This note-taking app will be faily simple.
 ## General Organization
 This app will have three layers:
 
-1. **CLI Layer**: This layer will use Go + Cobra to create a CLI commands.
-2. **Service Layer**: This layer leverages Go functions for operations on notes.
-3. **Database Layer**: This layer will use BBolt, a pure Go key/value store that's fast, lightweight, and easy to use.
+1. **CLI Layer**: Go + Cobra to create a CLI commands.
+2. **Service Layer**: Go functions for operations on notes.
+3. **Database Layer**: use BBolt, a pure Go key/value store that's fast, lightweight, and easy to use.
