@@ -15,3 +15,18 @@ This caused enough problems that I decided to look for alternative, easier appro
 I'm thus starting a new project to implement this approach. I will be using code from the previous project, because I think there's some good stuff there.
 
 In addition, I'm going to try using a more test-driven development approach. In the previous project, I created a custom logging function -- almost a mini side-project -- which was interesting and, for debugging purposes, very helpful. But I want something a little more robust than that; plus, I want to learn something new, and this is an important part of software development.
+
+## Features
+
+This note-taking app will be faily simple.
+
+### General Features
+- Create a note
+- List notes (by modified date, creation date)
+- Edit notes (opens a note in the default editor of the OS)
+- Delete notes
+- Tag notes 
+    - Add tag
+    - Remove tag
+    - List tags
+
