@@ -18,6 +18,8 @@ In addition, I'm going to try using a more test-driven development approach. In 
 
 ## Features
 
+[24 Feb 2025]
+
 This note-taking app will be faily simple.
 
 ### General Features
@@ -31,8 +33,11 @@ This note-taking app will be faily simple.
     - List tags
 
 ## General Organization
+
+[24 Feb 2025]
+
 This app will have three layers:
 
 1. **CLI Layer**: Go + Cobra to create a CLI commands.
 2. **Service Layer**: Go functions for operations on notes.
-3. **Database Layer**: use BBolt, a pure Go key/value store that's fast, lightweight, and easy to use.
+3. **Database Layer**: uses BBolt, a pure Go key/value store that's fast, lightweight, and easy to use.
