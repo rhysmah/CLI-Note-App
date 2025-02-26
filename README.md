@@ -41,3 +41,32 @@ This app will have three layers:
 1. **CLI Layer**: Go + Cobra to create a CLI commands.
 2. **Service Layer**: Go functions for operations on notes.
 3. **Database Layer**: uses BBolt, a pure Go key/value store that's fast, lightweight, and easy to use.
+
+## Learnings
+
+[25 Feb 2025]
+
+My initial project organization plan is as follows:
+
+```
+cli-note-app/
+    cmd/
+        add/
+            add.go
+            validation.go
+    db/
+        db.go
+    models/
+        note.go
+    go.mod
+    go.sum
+```
+
+`cmd/` will contain the CLI commands, via Cobra, that the user can run. This will also contain the validation functions,
+using the Validator Pattern, use to ensure that commands are valid. For example, when listing notes, we'll want to ensure that the user inputs valid commands, such as `created` or `modified`, and valid flags, such as `-asc` or `--desc`.
+
+`db/` will contain BBolt database code.
+
+`models/` will contain the `Note` struct, which will be used to represent a note object in the app. It will also contain an
+interface, yet to be named, that will define the methods that the `Note` struct will implement.
+
