@@ -22,5 +22,5 @@ out/
 .env.*.local
 
 # Log files
-note_app_*.txt
-note-app*
+note_*.txt
+note-*
