@@ -15,6 +15,8 @@ const (
 	dateTimeFormat    string = "2006_01_02_15_04"
 )
 
+// newValidator creates and returns a new validator for Note objects
+// with predefined validation rules.
 func newValidator() *validator.Validator[models.Note] {
 	return &validator.Validator[models.Note]{
 		Rules: []validator.ValidationRule[models.Note]{
@@ -23,6 +25,10 @@ func newValidator() *validator.Validator[models.Note] {
 	}
 }
 
+// validateNoteTitle checks if the note's title meets the required criteria:
+// - Does not exceed the character limit
+// - Does not contain illegal characters
+// Returns an error if validation fails.
 func validateNoteTitle(note models.Note) error {
 	noteNameTrimmed := strings.TrimSpace(note.Title)
 
@@ -36,6 +42,9 @@ func validateNoteTitle(note models.Note) error {
 	return nil
 }
 
+// checkForIllegalCharacters verifies that the note name doesn't contain any
+// forbidden characters defined in illegalChars. Returns an error listing any
+// illegal characters found.
 func checkForIllegalCharacters(noteName string) error {
 	var illegalCharsFound []rune
 
