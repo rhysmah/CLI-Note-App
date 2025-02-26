@@ -14,7 +14,7 @@ const (
 	notesDBFile            = "notes.db"
 	readWriteAccess        = 0755
 	dbReadWritePermissions = 0600
-	notesBucket            = "Notes"
+	NotesBucket            = "Notes"
 )
 
 // Initialize sets up and returns a new BoltDB instance for storing notes.
@@ -69,9 +69,9 @@ func setupNotesDB(dbFile string) (*bolt.DB, error) {
 // If the bucket doesn't exist, it creates it.
 func createNoteBucket(db *bolt.DB) error {
 	return db.Update(func(tx *bolt.Tx) error {
-		_, err := tx.CreateBucketIfNotExists([]byte(notesBucket))
+		_, err := tx.CreateBucketIfNotExists([]byte(NotesBucket))
 		if err != nil {
-			return fmt.Errorf("error creating %q bucket: %w", notesBucket, err)
+			return fmt.Errorf("error creating %q bucket: %w", NotesBucket, err)
 		}
 		return nil
 	})
