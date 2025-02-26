@@ -26,7 +26,12 @@ to quickly create a Cobra application.`,
 	PersistentPreRun: func(cmd *cobra.Command, args []string) {
 		var err error
 
+		// TODO
 		// Include logic to setup notes directory the first time user starts program
+		// For the above, check for a flag
+		// Update command description
+		// Improve error messages
+		// Consider global logger
 
 		db, err := db.Initialize("")
 		if err != nil {
