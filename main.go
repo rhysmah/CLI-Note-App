@@ -3,8 +3,11 @@ Copyright © 2025 NAME HERE <EMAIL ADDRESS>
 */
 package main
 
-import cmd "github.com/rhysmah/CLI-Note-App/cmd/root"
+import (
+	_ "github.com/rhysmah/CLI-Note-App/cmd/new"
+	"github.com/rhysmah/CLI-Note-App/cmd/root"
+)
 
 func main() {
-	cmd.Execute()
+	root.Execute()
 }
