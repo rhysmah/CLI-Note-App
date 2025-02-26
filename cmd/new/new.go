@@ -31,12 +31,12 @@ func init() {
 
 func NewCommand() *cobra.Command {
 	cmd := &cobra.Command{
-		Use: createCmdFull,
+		Use:   createCmdFull,
 		Short: createCmdShort,
-		Long: createCmdDesc,
-		Args: cobra.ExactArgs(1),
+		Long:  createCmdDesc,
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			
+
 			note, err := createNote(args[0])
 			if err != nil {
 				return fmt.Errorf("error creating note: %w", err)
@@ -54,16 +54,17 @@ func NewCommand() *cobra.Command {
 }
 
 func createNote(title string) (models.Note, error) {
-	newNote := models.Note {
-		ID: 		uuid.New().String(),
-		Title: 		title,
-		Content: 	"",
+	newNote := models.Note{
+		ID:         uuid.New().String(),
+		Title:      title,
+		Content:    "",
 		CreatedAt:  time.Now(),
 		ModifiedAt: time.Now(),
-		Tags:		[]string{},
+		Tags:       []string{},
 	}
 
-	if err := newValidator(); err != nil {
+	validator := newValidator()
+	if err := validator.Run(newNote); err != nil {
 		return models.Note{}, fmt.Errorf("invalid note name: %w", err)
 	}
 	return newNote, nil
@@ -87,8 +88,7 @@ func storeNoteInDB(note models.Note, database *bolt.DB) error {
 			return fmt.Errorf("failed to store note in database %q", db.NotesBucket)
 		}
 
-		fmt.Println("Added note %q to database", note.Title)
+		fmt.Printf("Added note %q to database", note.Title)
 		return nil
 	})
 }
-		
