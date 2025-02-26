@@ -24,11 +24,14 @@ The note will be saved as '[note-name]_[date].txt' in your notes directory.
 Note names cannot contain special characters or exceed 50 characters.`
 )
 
+// init registers the new note command with the root command.
 func init() {
 	newCommand := NewCommand()
 	root.RootCmd.AddCommand(newCommand)
 }
 
+// NewCommand creates and returns a cobra.Command for creating new notes.
+// The command requires exactly one argument: the note title.
 func NewCommand() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   createCmdFull,
@@ -53,6 +56,9 @@ func NewCommand() *cobra.Command {
 	return cmd
 }
 
+// createNote instantiates a new Note with the given title and validates it.
+// It generates a UUID, sets creation and modification times, and initializes 
+// an empty content and tags slice.
 func createNote(title string) (models.Note, error) {
 	newNote := models.Note{
 		ID:         uuid.New().String(),
@@ -70,6 +76,8 @@ func createNote(title string) (models.Note, error) {
 	return newNote, nil
 }
 
+// storeNoteInDB persists the given note in the BoltDB database.
+// It marshals the note to JSON and stores it using the note's ID as the key.
 func storeNoteInDB(note models.Note, database *bolt.DB) error {
 
 	return database.Update(func(tx *bolt.Tx) error {
