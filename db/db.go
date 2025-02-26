@@ -35,7 +35,6 @@ func Initialize(userPath string) (*bolt.DB, error) {
 	if err != nil {
 		return nil, fmt.Errorf("error with database: %w", err)
 	}
-
 	return db, nil
 }
 
@@ -60,11 +59,9 @@ func setupNotesDB(dbFile string) (*bolt.DB, error) {
 	if err != nil {
 		return nil, fmt.Errorf("error opening / creating database: %w", err)
 	}
-
 	if err := createNoteBucket(db); err != nil {
 		return nil, err
 	}
-
 	return db, nil
 }
 
