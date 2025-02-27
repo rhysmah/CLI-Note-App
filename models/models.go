@@ -14,3 +14,8 @@ type Note struct {
 	ModifiedAt time.Time `json:"modified_at"`
 	Tags       []string  `json:"tags"`
 }
+
+type NoteTitle struct {
+	Title string `json:"title"`
+	ID    string `json:"id"`
+}
