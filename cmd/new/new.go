@@ -57,7 +57,7 @@ func NewCommand() *cobra.Command {
 }
 
 // createNote instantiates a new Note with the given title and validates it.
-// It generates a UUID, sets creation and modification times, and initializes 
+// It generates a UUID, sets creation and modification times, and initializes
 // an empty content and tags slice.
 func createNote(title string) (models.Note, error) {
 	newNote := models.Note{
