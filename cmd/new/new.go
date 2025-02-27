@@ -2,7 +2,6 @@ package new
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"time"
 
@@ -17,7 +16,7 @@ import (
 )
 
 const (
-	createCmdFull  = "create"
+	createCmdFull  = "new"
 	createCmdShort = "Create a new note"
 	createCmdDesc  = `Create a new note with the specified name.
 The note will be saved as '[note-name]_[date].txt' in your notes directory.
@@ -39,18 +38,14 @@ func NewCommand() *cobra.Command {
 		Long:  createCmdDesc,
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-
 			note, err := createNote(args[0])
 			if err != nil {
 				return fmt.Errorf("error creating note: %w", err)
 			}
-
 			if err = storeNoteInDB(note, root.NotesDB); err != nil {
 				return fmt.Errorf("error saving note to database: %w", err)
 			}
-
 			return nil
-
 		},
 	}
 	return cmd
@@ -79,24 +74,44 @@ func createNote(title string) (models.Note, error) {
 // storeNoteInDB persists the given note in the BoltDB database.
 // It marshals the note to JSON and stores it using the note's ID as the key.
 func storeNoteInDB(note models.Note, database *bolt.DB) error {
-
 	return database.Update(func(tx *bolt.Tx) error {
-		bucket := tx.Bucket([]byte(db.NotesBucket))
-		if bucket == nil {
-			return errors.New("bucket does not exist")
+		if err := storeNote(tx, note); err != nil {
+			return fmt.Errorf("error storing note %q in database: %w", note.Title, err)
 		}
-
-		noteJSON, err := json.Marshal(note)
-		if err != nil {
-			return fmt.Errorf("failed to marshal note as JSON: %w", err)
+		if err := storeNoteTitle(tx, note); err != nil {
+			return fmt.Errorf("error storing note %q in database: %w", note.Title, err)
 		}
-
-		err = bucket.Put([]byte(note.ID), noteJSON)
-		if err != nil {
-			return fmt.Errorf("failed to store note in database %q", db.NotesBucket)
-		}
-
-		fmt.Printf("Added note %q to database", note.Title)
+		fmt.Printf("Added note %q to database\n", note.Title)
 		return nil
 	})
+}
+
+func storeNote(tx *bolt.Tx, note models.Note) error {
+	bucket := tx.Bucket([]byte(db.NotesBucket))
+
+	if bucket == nil {
+		return fmt.Errorf("bucket %s does not exist", db.NotesBucket)
+	}
+	noteJSON, err := json.Marshal(note)
+	if err != nil {
+		return fmt.Errorf("failed to marshal note as JSON: %w", err)
+	}
+	err = bucket.Put([]byte(note.ID), noteJSON)
+	if err != nil {
+		return fmt.Errorf("failed to store note in database %q", db.NotesBucket)
+	}
+	return nil
+}
+
+func storeNoteTitle(tx *bolt.Tx, note models.Note) error {
+	bucket := tx.Bucket([]byte(db.NotesTitleBucket))
+
+	if bucket == nil {
+		return fmt.Errorf("failed to marshal note as JSON: %s", db.NotesTitleBucket)
+	}
+	err := bucket.Put([]byte(note.Title), []byte(note.ID))
+	if err != nil {
+		return fmt.Errorf("failed to store title in database %q", db.NotesBucket)
+	}
+	return nil
 }
