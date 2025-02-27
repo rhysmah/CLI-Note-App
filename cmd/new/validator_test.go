@@ -125,7 +125,7 @@ func TestValidateNoteTitleCharacters(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 
 			note := models.Note{Title: tt.noteTitle}
-			err := validateNoteTitleIllegalCharacters(note)
+			err := validateNoteTitleCharacters(note)
 
 			if (err != nil) != tt.wantErr {
 				t.Errorf("validateNoteTitle() error = %v, wantErr %v", err, tt.wantErr)

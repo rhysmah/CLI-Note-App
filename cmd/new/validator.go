@@ -22,7 +22,7 @@ func newValidator() *validator.Validator[models.Note] {
 	return &validator.Validator[models.Note]{
 		Rules: []validator.ValidationRule[models.Note]{
 			validateNoteTitleLength,
-			validateNoteTitleIllegalCharacters,
+			validateNoteTitleCharacters,
 		},
 	}
 }
@@ -48,7 +48,7 @@ func validateNoteTitleLength(note models.Note) error {
 // checkForIllegalCharacters verifies that the note name doesn't contain any
 // forbidden characters defined in illegalChars. Returns an error listing any
 // illegal characters found.
-func validateNoteTitleIllegalCharacters(note models.Note) error {
+func validateNoteTitleCharacters(note models.Note) error {
 	var illegalCharsFound []rune
 
 	for _, char := range note.Title {
