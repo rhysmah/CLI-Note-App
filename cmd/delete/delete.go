@@ -24,11 +24,14 @@ The note-id is required and must match the ID of an existing note.
 This action cannot be undone.`
 )
 
+// init registers the delete command with the root command.
 func init() {
 	deleteCommand := DeleteCommand()
 	root.RootCmd.AddCommand(deleteCommand)
 }
 
+// DeleteCommand creates and returns a cobra.Command for deleting notes.
+// The command requires exactly one argument: the note title to delete.
 func DeleteCommand() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   deleteCmdFull,
@@ -46,6 +49,9 @@ func DeleteCommand() *cobra.Command {
 	return cmd
 }
 
+// deleteNote removes a note from the database using its title.
+// It deletes both the note content and its title mapping.
+// Returns an error if the note doesn't exist or if deletion fails.
 func deleteNote(title string, database *bolt.DB) error {
 	return database.Update(func(tx *bolt.Tx) error {
 		bucket := tx.Bucket([]byte(db.NotesBucket))
@@ -76,6 +82,9 @@ func deleteNote(title string, database *bolt.DB) error {
 	})
 }
 
+// extractNoteID retrieves the note's ID from the title mapping bucket.
+// Returns the note ID as a string if found, or an error if the title
+// doesn't exist or the bucket is missing.
 func extractNoteID(noteTitle string, tx *bolt.Tx) (string, error) {
 	bucket := tx.Bucket([]byte(db.NotesTitleBucket))
 	if bucket == nil {
