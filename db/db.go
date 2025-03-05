@@ -12,8 +12,8 @@ import (
 const (
 	standardNotesDir       = ".notes"
 	notesDBFile            = "notes.db"
-	readWriteAccess        = 0755
-	dbReadWritePermissions = 0600
+	ReadWriteAccess        = 0755
+	DbReadWritePermissions = 0600
 	NotesBucket            = "Notes"
 	NotesTitleBucket       = "NotesTitle"
 )
@@ -27,7 +27,7 @@ func Initialize(userPath string) (*bolt.DB, error) {
 		return nil, fmt.Errorf("error creating notes directory: %w", err)
 	}
 
-	if err := os.MkdirAll(notesDirectory, readWriteAccess); err != nil {
+	if err := os.MkdirAll(notesDirectory, ReadWriteAccess); err != nil {
 		return nil, fmt.Errorf("error creating default notes directory: %w", err)
 	}
 
@@ -56,7 +56,7 @@ func defineNotesDirectory(userPath string) (string, error) {
 // setupNotesDB opens or creates a BoltDB database file at the specified path.
 // It configures the database with appropriate permissions and timeout settings.
 func setupNotesDB(dbFile string) (*bolt.DB, error) {
-	db, err := bolt.Open(dbFile, dbReadWritePermissions, &bolt.Options{Timeout: 1 * time.Second})
+	db, err := bolt.Open(dbFile, DbReadWritePermissions, &bolt.Options{Timeout: 1 * time.Second})
 	if err != nil {
 		return nil, fmt.Errorf("error opening / creating database: %w", err)
 	}
