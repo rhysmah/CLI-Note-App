@@ -133,3 +133,51 @@ func TestValidateNoteTitleCharacters(t *testing.T) {
 		})
 	}
 }
+
+func TestNoteValidator(t *testing.T) {
+	validator := newValidator()
+
+	// Test that validator has x number of rules. 
+	// As of [04-03-2025]: 2 rules.
+	if len(validator.Rules) != 2 {
+		t.Errorf("Validator has %d rules; expected 2", len(validator.Rules))
+	}
+
+	// Test cases
+	tests := []struct {
+		name string
+		Note models.Note
+		wantErr bool
+	}{
+		{
+			name: "Valid note",
+			Note: models.Note{Title: "valid_note_name"},
+			wantErr: false,
+		},
+		{
+			name: "Title too short (empty)",
+			Note: models.Note{Title: ""},
+			wantErr: true,
+		},
+		{
+			name: "Title too long",
+			Note: models.Note{Title: strings.Repeat("a", noteNameMaxLimit + 1)},
+			wantErr: true,
+		},
+		{
+			name: "Title contains invalid characters",
+			Note: models.Note{Title: "note_with!_invalid:_characters/"},
+			wantErr: true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			err := validator.Run(tt.Note)
+
+			if (err != nil) != tt.wantErr {
+				t.Errorf("Validator.Run error = %v; wanted %v", err, tt.wantErr)
+			}
+		})
+	}
+}
