@@ -75,7 +75,7 @@ func createNote(title string) (models.Note, error) {
 // It marshals the note to JSON and stores it using the note's ID as the key.
 func storeNoteInDB(note models.Note, database *bolt.DB) error {
 	return database.Update(func(tx *bolt.Tx) error {
-		if err := storeNote(tx, note); err != nil {
+		if err := StoreNoteContent(tx, note); err != nil {
 			return fmt.Errorf("error storing note %q in database: %w", note.Title, err)
 		}
 		if err := storeNoteTitle(tx, note); err != nil {
@@ -86,7 +86,7 @@ func storeNoteInDB(note models.Note, database *bolt.DB) error {
 	})
 }
 
-func storeNote(tx *bolt.Tx, note models.Note) error {
+func StoreNoteContent(tx *bolt.Tx, note models.Note) error {
 	bucket := tx.Bucket([]byte(db.NotesBucket))
 
 	if bucket == nil {
