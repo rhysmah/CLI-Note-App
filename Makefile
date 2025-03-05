@@ -20,10 +20,13 @@ format:
 vet: format
 	go vet ./...
 
+test: vet
+	go test -v -race ./...
+
 build: vet
 	GOARCH=$(GOARCH) GOOS=darwin go build -o $(BINARY_OSX) main.go
 	GOARCH=$(GOARCH) GOOS=linux go build -o $(BINARY_UNIX) main.go
 	GOARCH=$(GOARCH) GOOS=windows go build -o $(BINARY_WIN) main.go
 
 # Explicitly declares what are NOT files
-.PHONY: clean format vet build
+.PHONY: clean format vet test build
