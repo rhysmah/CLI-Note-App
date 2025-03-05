@@ -10,6 +10,10 @@ import (
 	bolt "go.etcd.io/bbolt"
 )
 
+// TestSetupDB creates a temporary BoltDB database for testing purposes.
+// It returns the database connection, the temporary directory path, and a cleanup function.
+// The cleanup function should be deferred by the caller to ensure proper cleanup of resources.
+// If any setup step fails, it will call t.Fatalf() and clean up any partially created resources.
 func TestSetupDB(t *testing.T) (*bolt.DB, string, func()) {
 	testTempDir, err := os.MkdirTemp("", "notes-test-*")
 	if err != nil {
