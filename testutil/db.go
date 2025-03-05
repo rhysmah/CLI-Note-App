@@ -17,11 +17,10 @@ func TestSetupDB(t *testing.T) (*bolt.DB, string, func()) {
 	}
 
 	testDBPath := filepath.Join(testTempDir, "test.db")
-
 	testDB, err := bolt.Open(testDBPath,
-							 db.DbReadWritePermissions, 
-							 &bolt.Options{Timeout: 1 * time.Second})
-	if err != nil {	
+		db.DbReadWritePermissions,
+		&bolt.Options{Timeout: 1 * time.Second})
+	if err != nil {
 		os.RemoveAll(testTempDir)
 		t.Fatalf("couldn't create test database for testing: %v", err)
 	}
