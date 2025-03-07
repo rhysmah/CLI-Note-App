@@ -13,6 +13,8 @@ import (
 	bolt "go.etcd.io/bbolt"
 )
 
+// TODO: Add tests to ensure note was actually saved to database
+
 const (
 	testNoteTitle        = "new_note"
 	testInvalidNoteTitle = "new:note"
