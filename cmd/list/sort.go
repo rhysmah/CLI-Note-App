@@ -40,6 +40,6 @@ func compareNotes(a, b models.Note, field SortBy, order SortOrder) bool {
 		return a.ModifiedAt.After(b.ModifiedAt)
 
 	default:
-		return a.Title < b.Title
+		return a.Title < b.Title // A - Z
 	}
 }
