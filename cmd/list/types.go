@@ -8,7 +8,6 @@ const (
 	SortByCreated  SortBy = "created"
 	SortByTitle    SortBy = "title"
 
-	SortOrderAscending    SortOrder = "ascending"
-	SortOrderDescending   SortOrder = "descending"
+	SortOrderAscending  SortOrder = "ascending"
+	SortOrderDescending SortOrder = "descending"
 )
-
