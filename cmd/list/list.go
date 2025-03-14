@@ -47,6 +47,11 @@ func ListCommand() *cobra.Command {
 				return fmt.Errorf("error opening database")
 			}
 
+			if len(notes) == 0 {
+				fmt.Println("You have no notes")
+				return nil
+			}
+
 			sortNotes(notes, sortBy, orderBy)
 
 			for _, note := range notes {
@@ -63,6 +68,10 @@ func ListCommand() *cobra.Command {
 
 	return cmd
 }
+
+
+// TODO: create a note print function.
+
 
 func convertToSortBy(sort string) SortBy {
 	switch sort {
