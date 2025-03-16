@@ -16,6 +16,10 @@ const (
 	listCmdFull  = "list"
 	listCmdShort = "List all notes"
 	listCmdDesc  = "Display a list of all your notes."
+
+	sortFlag = "sort-flag"
+	orderFlag = "reverse"
+
 )
 
 func init() {
@@ -32,15 +36,11 @@ func ListCommand() *cobra.Command {
 		Long:  listCmdDesc,
 		RunE: func(cmd *cobra.Command, args []string) error {
 
-			// Get flags
-			sort, _ := cmd.Flags().GetString("sort-by")
-			reverse, _ := cmd.Flags().GetBool("reverse")
-
-			// Convert flag values to SortType, OrderType
+			sort, _ := cmd.Flags().GetString(sortFlag)
 			sortBy := convertToSortBy(sort)
-			orderBy := convertToSortOrder(reverse)
-
-			// Sort and displays values based on flags
+			
+			order, _ := cmd.Flags().GetBool(orderFlag)
+			orderBy := convertToSortOrder(order)
 
 			notes, err := getNotes(root.NotesDB)
 			if err != nil {
@@ -54,17 +54,13 @@ func ListCommand() *cobra.Command {
 
 			sortNotes(notes, sortBy, orderBy)
 
-			for _, note := range notes {
-				fmt.Println(note.Title)
-			}
-
 			return nil
 		},
 	}
 
 	// TODO: create constants for arguments
-	cmd.Flags().StringP("sort-by", "s", "modified", "Sort by: title, created, modified")
-	cmd.Flags().BoolP("reverse", "r", false, "Reverse the sort order")
+	cmd.Flags().StringP(sortFlag, "s", "modified", "Sort by: title, created, modified")
+	cmd.Flags().BoolP(orderFlag, "r", false, "Reverse the sort order")
 
 	return cmd
 }
