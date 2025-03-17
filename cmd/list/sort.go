@@ -29,15 +29,15 @@ func compareNotes(a, b models.Note, field SortBy, order SortOrder) bool {
 
 	case SortByCreated:
 		if ascending {
-			return a.CreatedAt.Before(b.CreatedAt)
+			return a.CreatedAt.After(b.CreatedAt)
 		}
-		return a.CreatedAt.After(b.CreatedAt)
+		return a.CreatedAt.Before(b.CreatedAt)
 
 	case SortByModified:
 		if ascending {
-			return a.ModifiedAt.Before(b.ModifiedAt)
+			return a.ModifiedAt.After(b.ModifiedAt)
 		}
-		return a.ModifiedAt.After(b.ModifiedAt)
+		return a.ModifiedAt.Before(b.ModifiedAt)
 
 	default:
 		return a.Title < b.Title // A - Z
