@@ -11,7 +11,7 @@ import (
 
 const (
 	illegalChars     string = "\\/:*?\"<>|: ."
-	noteNameMaxLimit int    = 50
+	noteNameMaxLimit int    = 20
 	noteNameMinLimit int    = 1
 	dateTimeFormat   string = "2006_01_02_15_04"
 )
