@@ -17,9 +17,8 @@ const (
 	listCmdShort = "List all notes"
 	listCmdDesc  = "Display a list of all your notes."
 
-	sortFlag = "sort-flag"
+	sortFlag  = "sort-by"
 	orderFlag = "reverse"
-
 )
 
 func init() {
@@ -38,7 +37,7 @@ func ListCommand() *cobra.Command {
 
 			sort, _ := cmd.Flags().GetString(sortFlag)
 			sortBy := convertToSortBy(sort)
-			
+
 			order, _ := cmd.Flags().GetBool(orderFlag)
 			orderBy := convertToSortOrder(order)
 
@@ -53,6 +52,7 @@ func ListCommand() *cobra.Command {
 			}
 
 			sortNotes(notes, sortBy, orderBy)
+			DisplayNotes(notes, sortBy, orderBy)
 
 			return nil
 		},
@@ -65,9 +65,7 @@ func ListCommand() *cobra.Command {
 	return cmd
 }
 
-
 // TODO: create a note print function.
-
 
 func convertToSortBy(sort string) SortBy {
 	switch sort {
@@ -97,7 +95,7 @@ func getNotes(database *bolt.DB) ([]models.Note, error) {
 	var notes []models.Note
 
 	err := database.View(func(tx *bolt.Tx) error {
-		
+
 		notesBucket := tx.Bucket([]byte(db.NotesBucket))
 		if notesBucket == nil {
 			return fmt.Errorf("bucket %s does not exist", db.NotesBucket)
