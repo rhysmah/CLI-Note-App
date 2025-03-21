@@ -16,11 +16,9 @@ const (
 )
 
 const (
-	dateTimeWidth   = 18
-	paddingWidth    = 2
-	separatorSymbol = "|"
-	lineSymbol      = "-"
-	separator       = "  |  "
+	dateTimeWidth = 18
+	lineSymbol    = "-"
+	separator     = "  |  "
 )
 
 // DisplayNotes renders a formatted table of notes.
@@ -61,7 +59,6 @@ func calculateRowLineLength(notes []models.Note) int {
 	return fileNameWidth + (dateTimeWidth * 2) + (len(separator) * 2)
 }
 
-
 // printHeader prints a formatted header for the notes list display.
 // It shows how the notes are sorted (by date, title, etc.) and the sort order (ascending/descending).
 //
@@ -79,7 +76,7 @@ func printHeader(sort SortBy, order SortOrder, rowLineLength int) {
 	fmt.Printf("%s\n%s\n%s\n", rowLine, header, rowLine)
 }
 
-// printNotesTable displays a formatted table of notes with columns for 
+// printNotesTable displays a formatted table of notes with columns for
 // filename, creation date, and modification date.
 func printNotesTable(notes []models.Note, rowLineLength, longestFileNameLength int) {
 	// Create the divider line
