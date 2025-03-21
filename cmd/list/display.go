@@ -23,6 +23,24 @@ const (
 	separator       = "  |  "
 )
 
+// DisplayNotes renders a formatted table of notes.
+// It displays notes based on the specified sort criteria and order..
+//
+// Parameters:
+//   - notes: The slice of notes to display
+//   - sort: The field by which to sort the notes (e.g., by name, date)
+//   - order: The order in which to sort (ascending or descending)
+func DisplayNotes(notes []models.Note, sort SortBy, order SortOrder) {
+	rowLineLength := calculateRowLineLength(notes)
+	longestFileNameLength := getLongestFileName(notes)
+
+	printHeader(sort, order, rowLineLength)
+	printNotesTable(notes, rowLineLength, longestFileNameLength)
+}
+
+// Calculates and returns the length of the longest file name,
+// either the header -- "File Name" -- or the name of an actual
+// file. This is used for table-formatting purposes.
 func getLongestFileName(notes []models.Note) int {
 	longestName := len(headerFileName)
 
@@ -37,11 +55,20 @@ func getLongestFileName(notes []models.Note) int {
 	return longestName
 }
 
+// Calculates the length of the table row dashes for table-formatting purposes.
 func calculateRowLineLength(notes []models.Note) int {
 	fileNameWidth := max(len(headerFileName), getLongestFileName(notes))
 	return fileNameWidth + (dateTimeWidth * 2) + (len(separator) * 2)
 }
 
+
+// printHeader prints a formatted header for the notes list display.
+// It shows how the notes are sorted (by date, title, etc.) and the sort order (ascending/descending).
+//
+// Parameters:
+//   - sort: The field by which notes are sorted
+//   - order: The direction of the sort (ascending/descending)
+//   - rowLineLength: Length of the decorative lines surrounding the header
 func printHeader(sort SortBy, order SortOrder, rowLineLength int) {
 	sortName := getSortString(sort)
 	orderName := getOrderString(sort, order)
@@ -52,19 +79,13 @@ func printHeader(sort SortBy, order SortOrder, rowLineLength int) {
 	fmt.Printf("%s\n%s\n%s\n", rowLine, header, rowLine)
 }
 
-func DisplayNotes(notes []models.Note, sort SortBy, order SortOrder) {
-	rowLineLength := calculateRowLineLength(notes)
-	longestFileNameLength := getLongestFileName(notes)
-
-	printHeader(sort, order, rowLineLength)
-	printNotesTable(notes, rowLineLength, longestFileNameLength)
-}
-
+// printNotesTable displays a formatted table of notes with columns for 
+// filename, creation date, and modification date.
 func printNotesTable(notes []models.Note, rowLineLength, longestFileNameLength int) {
 	// Create the divider line
 	rowLine := strings.Repeat(lineSymbol, rowLineLength)
 
-	// Print the header row with consistent formatting
+	// Print header row
 	fmt.Printf("%-*s%s%-*s%s%-*s\n",
 		longestFileNameLength, headerFileName,
 		separator, dateTimeWidth, headerCreated,
@@ -86,6 +107,8 @@ func formatDateTime(dt time.Time) string {
 	return dt.Format(dateTimeFormat)
 }
 
+// Returns a string describing how the data is ordered.
+// i.e., A - Z (if by title), newest to olders (if by a date)
 func getOrderString(sort SortBy, order SortOrder) string {
 	if sort == SortByTitle {
 		if order == SortOrderAscending {
@@ -102,6 +125,8 @@ func getOrderString(sort SortBy, order SortOrder) string {
 	}
 }
 
+// Returns a string describing in what way the data is ordered
+// i.e., title, creation date, modified date.
 func getSortString(sort SortBy) string {
 	switch sort {
 	case SortByTitle:
