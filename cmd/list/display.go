@@ -24,24 +24,22 @@ const (
 )
 
 func getLongestFileName(notes []models.Note) int {
-	longestName := 0
+	longestName := len(headerFileName)
 
 	if len(notes) == 0 {
 		return longestName
 	}
-
 	for _, note := range notes {
 		if len(note.Title) > longestName {
 			longestName = len(note.Title)
 		}
 	}
-
 	return longestName
 }
 
 func calculateRowLineLength(notes []models.Note) int {
 	fileNameWidth := max(len(headerFileName), getLongestFileName(notes))
-	return fileNameWidth + (dateTimeWidth * 2) + (len(separator) * 3)
+	return fileNameWidth + (dateTimeWidth * 2) + (len(separator) * 2)
 }
 
 func printHeader(sort SortBy, order SortOrder, rowLineLength int) {
