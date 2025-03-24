@@ -13,12 +13,11 @@ const (
 	headerFileName = "File Name"
 	headerCreated  = "Created Date"
 	headerModified = "Modified Date"
-	
-	alphabetical = "A - Z"
-	reverseAlphabetical = "Z - A"
-	newestToOldest = "Newest to Oldest"
-	oldestToNewest = "OldestToNewest"
 
+	alphabetical        = "A - Z"
+	reverseAlphabetical = "Z - A"
+	newestToOldest      = "Newest to Oldest"
+	oldestToNewest      = "OldestToNewest"
 )
 
 const (
