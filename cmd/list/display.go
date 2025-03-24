@@ -13,6 +13,12 @@ const (
 	headerFileName = "File Name"
 	headerCreated  = "Created Date"
 	headerModified = "Modified Date"
+	
+	alphabetical = "A - Z"
+	reverseAlphabetical = "Z - A"
+	newestToOldest = "Newest to Oldest"
+	oldestToNewest = "OldestToNewest"
+
 )
 
 const (
@@ -109,15 +115,15 @@ func formatDateTime(dt time.Time) string {
 func getOrderString(sort SortBy, order SortOrder) string {
 	if sort == SortByTitle {
 		if order == SortOrderAscending {
-			return "A - Z"
+			return alphabetical
 		} else {
-			return "Z - A"
+			return reverseAlphabetical
 		}
 	} else {
 		if order == SortOrderAscending {
-			return "Newest to Oldest"
+			return newestToOldest
 		} else {
-			return "Oldest to Newest"
+			return oldestToNewest
 		}
 	}
 }
