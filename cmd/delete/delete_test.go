@@ -103,9 +103,26 @@ func TestDeleteExistingNote(t *testing.T) {
 		t.Errorf("Error deleting note from database: %v", err)
 	}
 
-	testNoteContentDeleted(t, note, testDb)
-	testNoteTitleDeleted(t, note, testDb)
+	testNoteContentNotInDB(t, note, testDb)
+	testNoteTitleNotInDB(t, note, testDb)
 }
+
+func TestDeleteNonExistingNote(t *testing.T) {
+	testDb, _, cleanup := testutil.SetupTestDB(t)
+	defer cleanup()
+
+	note := createTestNote()
+
+	// Confirm that database is empty
+	testNoteContentNotInDB(t, note, testDb)
+	testNoteTitleNotInDB(t, note, testDb)
+
+	err := deleteNote(note.Title, testDb)
+	if err == nil {
+		t.Errorf("Expected error deleting non-existing note: %v", err)
+	}
+}
+
 
 func testNoteContentSaved(t *testing.T, note models.Note, database *bolt.DB) {
 	var retrievedNoteContent models.Note
@@ -168,7 +185,7 @@ func testNoteTitleSaved(t *testing.T, note models.Note, database *bolt.DB) {
 	}
 }
 
-func testNoteTitleDeleted(t *testing.T, note models.Note, database *bolt.DB) {
+func testNoteTitleNotInDB(t *testing.T, note models.Note, database *bolt.DB) {
 	err := database.View(func(tx *bolt.Tx) error {
 		bucket := tx.Bucket([]byte(db.NotesTitleBucket))
 
@@ -190,7 +207,7 @@ func testNoteTitleDeleted(t *testing.T, note models.Note, database *bolt.DB) {
 	}
 }
 
-func testNoteContentDeleted(t *testing.T, note models.Note, database *bolt.DB) {
+func testNoteContentNotInDB(t *testing.T, note models.Note, database *bolt.DB) {
 	err := database.View(func(tx *bolt.Tx) error {
 		bucket := tx.Bucket([]byte(db.NotesBucket))
 
