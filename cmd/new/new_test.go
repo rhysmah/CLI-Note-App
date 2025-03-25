@@ -17,13 +17,13 @@ import (
 )
 
 const (
-	testNoteTitle        = "new_note"
+	testValidNoteTitle   = "new_note"
 	testNoteContent      = "sample text"
 	testInvalidNoteTitle = "new:note"
 )
 
 func TestNewNote(t *testing.T) {
-	note, err := createNote(testNoteTitle)
+	note, err := createNote(testValidNoteTitle)
 	if err != nil {
 		t.Errorf("Couldn't create note: %v", err)
 	}
@@ -31,7 +31,7 @@ func TestNewNote(t *testing.T) {
 	if note.ID == "" {
 		t.Errorf("Note ID not properly set; got %s", note.ID)
 	}
-	if note.Title != testNoteTitle {
+	if note.Title != testValidNoteTitle {
 		t.Errorf("Note title not correct; got %s", note.Title)
 	}
 	if note.Content != "" {
@@ -58,7 +58,7 @@ func TestInvalidNote(t *testing.T) {
 func createTestNote() models.Note {
 	return models.Note{
 		ID:         uuid.New().String(),
-		Title:      testNoteTitle,
+		Title:      testValidNoteTitle,
 		Content:    testNoteContent,
 		CreatedAt:  time.Now(),
 		ModifiedAt: time.Now(),
