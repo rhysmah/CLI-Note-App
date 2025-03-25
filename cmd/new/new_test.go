@@ -50,7 +50,7 @@ func TestStoreNoteInDB(t *testing.T) {
 
 	note := testutil.CreateTestNote()
 
-	err := storeNoteInDB(note, testDb)
+	err := StoreNoteInDB(note, testDb)
 	if err != nil {
 		t.Errorf("Error adding note to database: %v", err)
 	}
@@ -76,7 +76,7 @@ func TestStoreNoteInDB_Error(t *testing.T) {
 
 	// Should fail since buckets don't exist
 	note := testutil.CreateTestNote()
-	err = storeNoteInDB(note, testDb)
+	err = StoreNoteInDB(note, testDb)
 
 	if err == nil {
 		t.Error("Expected error when buckets don't exist, got nil")
