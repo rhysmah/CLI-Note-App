@@ -1,29 +1,18 @@
 package new
 
 import (
-	"encoding/json"
-	"fmt"
 	"os"
 	"path/filepath"
 	"testing"
 	"time"
 
-	"github.com/google/uuid"
-	"github.com/rhysmah/CLI-Note-App/db"
-	"github.com/rhysmah/CLI-Note-App/models"
 	"github.com/rhysmah/CLI-Note-App/testutil"
 
 	bolt "go.etcd.io/bbolt"
 )
 
-const (
-	testValidNoteTitle   = "new_note"
-	testNoteContent      = "sample text"
-	testInvalidNoteTitle = "new:note"
-)
-
 func TestNewNote(t *testing.T) {
-	note, err := createNote(testValidNoteTitle)
+	note, err := createNote(testutil.TestValidNoteTitle)
 	if err != nil {
 		t.Errorf("Couldn't create note: %v", err)
 	}
@@ -31,7 +20,7 @@ func TestNewNote(t *testing.T) {
 	if note.ID == "" {
 		t.Errorf("Note ID not properly set; got %s", note.ID)
 	}
-	if note.Title != testValidNoteTitle {
+	if note.Title != testutil.TestValidNoteTitle {
 		t.Errorf("Note title not correct; got %s", note.Title)
 	}
 	if note.Content != "" {
@@ -49,20 +38,9 @@ func TestNewNote(t *testing.T) {
 }
 
 func TestInvalidNote(t *testing.T) {
-	_, err := createNote(testInvalidNoteTitle)
+	_, err := createNote(testutil.TestInvalidNoteTitle)
 	if err == nil {
 		t.Errorf("Note title invalid; should have thrown error; got nil")
-	}
-}
-
-func createTestNote() models.Note {
-	return models.Note{
-		ID:         uuid.New().String(),
-		Title:      testValidNoteTitle,
-		Content:    testNoteContent,
-		CreatedAt:  time.Now(),
-		ModifiedAt: time.Now(),
-		Tags:       []string{},
 	}
 }
 
@@ -70,76 +48,15 @@ func TestStoreNoteInDB(t *testing.T) {
 	testDb, _, cleanup := testutil.SetupTestDB(t)
 	defer cleanup()
 
-	note := createTestNote()
+	note := testutil.CreateTestNote()
 
 	err := storeNoteInDB(note, testDb)
 	if err != nil {
 		t.Errorf("Error adding note to database: %v", err)
 	}
 
-	testNoteContentSaved(t, note, testDb)
-	testNoteTitleSaved(t, note, testDb)
-}
-
-func testNoteContentSaved(t *testing.T, note models.Note, database *bolt.DB) {
-	var retrievedNoteContent models.Note
-
-	err := database.View(func(tx *bolt.Tx) error {
-		bucket := tx.Bucket([]byte(db.NotesBucket))
-
-		if bucket == nil {
-			t.Errorf("Bucket not found; expected %s", db.NotesBucket)
-			return fmt.Errorf("bucket %s not found", db.NotesBucket)
-		}
-
-		retrievedNote := bucket.Get([]byte(note.ID))
-		if retrievedNote == nil {
-			t.Errorf("Note not found; expected Note with ID %s", note.ID)
-			return fmt.Errorf("Note not found; expected Note with ID %s", note.ID)
-		}
-
-		return json.Unmarshal(retrievedNote, &retrievedNoteContent)
-	})
-
-	if err != nil {
-		t.Errorf("Could not unmarshal note")
-	}
-	if retrievedNoteContent.ID != note.ID {
-		t.Errorf("Incorrect Note ID retrieved; expected %s", note.ID)
-	}
-	if retrievedNoteContent.Content != note.Content {
-		t.Errorf("Incorrect Note content; expected %s", note.Content)
-	}
-}
-
-func testNoteTitleSaved(t *testing.T, note models.Note, database *bolt.DB) {
-	var retrievedNoteID string
-
-	err := database.View(func(tx *bolt.Tx) error {
-		bucket := tx.Bucket([]byte(db.NotesTitleBucket))
-
-		if bucket == nil {
-			t.Errorf("Bucket not found; expected %s", db.NotesTitleBucket)
-			return fmt.Errorf("Bucket not found; expected %s", db.NotesTitleBucket)
-		}
-
-		// retrieving the Note ID associated with the Note Title
-		retrievedNote := bucket.Get([]byte(note.Title))
-		if retrievedNote == nil {
-			t.Errorf("Note not found; expected %s", note.Title)
-			return fmt.Errorf("Note not found; expected %s", note.Title)
-		}
-
-		retrievedNoteID = string(retrievedNote)
-		return nil
-	})
-
-	if err != nil {
-		t.Errorf("Note not found; expected %s", note.Title)
-	}
-	if retrievedNoteID != note.ID {
-		t.Errorf("Incorrect ID mapping for title %q: got %q, want %q", note.Title, retrievedNoteID, note.ID)
-	}
+	testutil.TestNoteContentSaved(t, note, testDb)
+	testutil.TestNoteTitleSaved(t, note, testDb)
 }
 
 func TestStoreNoteInDB_Error(t *testing.T) {
@@ -158,7 +75,7 @@ func TestStoreNoteInDB_Error(t *testing.T) {
 	defer testDb.Close()
 
 	// Should fail since buckets don't exist
-	note := createTestNote()
+	note := testutil.CreateTestNote()
 	err = storeNoteInDB(note, testDb)
 
 	if err == nil {
