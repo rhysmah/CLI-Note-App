@@ -132,11 +132,11 @@ func getOrderString(sort SortBy, order SortOrder) string {
 func getSortString(sort SortBy) string {
 	switch sort {
 	case SortByTitle:
-		return "Title"
+		return "TITLE"
 	case SortByCreated:
-		return "Creation Date"
+		return "CREATION DATE"
 	case SortByModified:
-		return "Modified Date"
+		return "MODIFIED DATE"
 	default:
 		return ""
 	}
