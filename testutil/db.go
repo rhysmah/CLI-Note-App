@@ -20,6 +20,8 @@ const (
 	TestInvalidNoteTitle = "new:note"
 )
 
+// CreateTestNote generates a sample note with predefined values for testing.
+// The note has a valid title, sample content, and a unique ID.
 func CreateTestNote() models.Note {
 	return models.Note{
 		ID:         uuid.New().String(),
@@ -31,6 +33,8 @@ func CreateTestNote() models.Note {
 	}
 }
 
+// TestNoteContentSaved verifies that a note's content was correctly saved in the database.
+// It retrieves the note by ID and compares the content with the expected values.
 func TestNoteContentSaved(t *testing.T, note models.Note, database *bolt.DB) {
 	var retrievedNoteContent models.Note
 
@@ -62,6 +66,8 @@ func TestNoteContentSaved(t *testing.T, note models.Note, database *bolt.DB) {
 	}
 }
 
+// TestNoteTitleSaved verifies that a note's title mapping was correctly saved in the database.
+// It checks that the note's title maps to the correct ID in the title bucket.
 func TestNoteTitleSaved(t *testing.T, note models.Note, database *bolt.DB) {
 	var retrievedNoteID string
 
@@ -92,10 +98,9 @@ func TestNoteTitleSaved(t *testing.T, note models.Note, database *bolt.DB) {
 	}
 }
 
-// TestSetupDB creates a temporary BoltDB database for testing purposes.
+// SetupTestDB creates a temporary BoltDB database for testing purposes.
 // It returns the database connection, the temporary directory path, and a cleanup function.
 // The cleanup function should be deferred by the caller to ensure proper cleanup of resources.
-// If any setup step fails, it will call t.Fatalf() and clean up any partially created resources.
 func SetupTestDB(t *testing.T) (*bolt.DB, string, func()) {
 	testTempDir, err := os.MkdirTemp("", "notes-test-*")
 	if err != nil {
