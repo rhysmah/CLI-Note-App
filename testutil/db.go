@@ -127,7 +127,7 @@ func SetupTestDB(t *testing.T) (*bolt.DB, string, func()) {
 	if err != nil {
 		testDB.Close()
 		os.RemoveAll(testTempDir)
-		t.Fatalf("Couldn't create %v bucket: %v", db.NotesBucket, err)
+		t.Fatalf("Couldn't create %v bucket: %v", db.NotesTitleBucket, err)
 	}
 
 	cleanup := func() {
