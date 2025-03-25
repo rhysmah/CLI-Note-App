@@ -1,14 +1,96 @@
 package testutil
 
 import (
+	"encoding/json"
+	"fmt"
 	"os"
 	"path/filepath"
 	"testing"
 	"time"
 
+	"github.com/google/uuid"
 	"github.com/rhysmah/CLI-Note-App/db"
+	"github.com/rhysmah/CLI-Note-App/models"
 	bolt "go.etcd.io/bbolt"
 )
+
+const (
+	TestValidNoteTitle   = "new_note"
+	TestNoteContent      = "sample text"
+	TestInvalidNoteTitle = "new:note"
+)
+
+func CreateTestNote() models.Note {
+	return models.Note{
+		ID:         uuid.New().String(),
+		Title:      TestValidNoteTitle,
+		Content:    TestNoteContent,
+		CreatedAt:  time.Now(),
+		ModifiedAt: time.Now(),
+		Tags:       []string{},
+	}
+}
+
+func TestNoteContentSaved(t *testing.T, note models.Note, database *bolt.DB) {
+	var retrievedNoteContent models.Note
+
+	err := database.View(func(tx *bolt.Tx) error {
+		bucket := tx.Bucket([]byte(db.NotesBucket))
+
+		if bucket == nil {
+			t.Errorf("Bucket not found; expected %s", db.NotesBucket)
+			return fmt.Errorf("bucket %s not found", db.NotesBucket)
+		}
+
+		retrievedNote := bucket.Get([]byte(note.ID))
+		if retrievedNote == nil {
+			t.Errorf("Note not found; expected Note with ID %s", note.ID)
+			return fmt.Errorf("note not found; expected Note with ID %s", note.ID)
+		}
+
+		return json.Unmarshal(retrievedNote, &retrievedNoteContent)
+	})
+
+	if err != nil {
+		t.Errorf("Could not unmarshal note")
+	}
+	if retrievedNoteContent.ID != note.ID {
+		t.Errorf("Incorrect Note ID retrieved; expected %s", note.ID)
+	}
+	if retrievedNoteContent.Content != note.Content {
+		t.Errorf("Incorrect Note content; expected %s", note.Content)
+	}
+}
+
+func TestNoteTitleSaved(t *testing.T, note models.Note, database *bolt.DB) {
+	var retrievedNoteID string
+
+	err := database.View(func(tx *bolt.Tx) error {
+		bucket := tx.Bucket([]byte(db.NotesTitleBucket))
+
+		if bucket == nil {
+			t.Errorf("Bucket not found; expected %s", db.NotesTitleBucket)
+			return fmt.Errorf("bucket not found; expected %s", db.NotesTitleBucket)
+		}
+
+		// retrieving the Note ID associated with the Note Title
+		retrievedNote := bucket.Get([]byte(note.Title))
+		if retrievedNote == nil {
+			t.Errorf("Note not found; expected %s", note.Title)
+			return fmt.Errorf("note not found; expected %s", note.Title)
+		}
+
+		retrievedNoteID = string(retrievedNote)
+		return nil
+	})
+
+	if err != nil {
+		t.Errorf("Note not found; expected %s", note.Title)
+	}
+	if retrievedNoteID != note.ID {
+		t.Errorf("Incorrect ID mapping for title %q: got %q, want %q", note.Title, retrievedNoteID, note.ID)
+	}
+}
 
 // TestSetupDB creates a temporary BoltDB database for testing purposes.
 // It returns the database connection, the temporary directory path, and a cleanup function.
