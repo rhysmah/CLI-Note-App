@@ -42,7 +42,7 @@ func NewCommand() *cobra.Command {
 			if err != nil {
 				return fmt.Errorf("error creating note: %w", err)
 			}
-			if err = storeNoteInDB(note, root.NotesDB); err != nil {
+			if err = StoreNoteInDB(note, root.NotesDB); err != nil {
 				return fmt.Errorf("error saving note to database: %w", err)
 			}
 			return nil
@@ -73,12 +73,12 @@ func createNote(title string) (models.Note, error) {
 
 // storeNoteInDB persists the given note in the BoltDB database.
 // It marshals the note to JSON and stores it using the note's ID as the key.
-func storeNoteInDB(note models.Note, database *bolt.DB) error {
+func StoreNoteInDB(note models.Note, database *bolt.DB) error {
 	return database.Update(func(tx *bolt.Tx) error {
 		if err := StoreNoteContent(tx, note); err != nil {
 			return fmt.Errorf("error storing note %q in database: %w", note.Title, err)
 		}
-		if err := storeNoteTitle(tx, note); err != nil {
+		if err := StoreNoteTitle(tx, note); err != nil {
 			return fmt.Errorf("error storing note %q in database: %w", note.Title, err)
 		}
 		fmt.Printf("Added note %q to database\n", note.Title)
@@ -103,7 +103,7 @@ func StoreNoteContent(tx *bolt.Tx, note models.Note) error {
 	return nil
 }
 
-func storeNoteTitle(tx *bolt.Tx, note models.Note) error {
+func StoreNoteTitle(tx *bolt.Tx, note models.Note) error {
 	bucket := tx.Bucket([]byte(db.NotesTitleBucket))
 
 	if bucket == nil {
