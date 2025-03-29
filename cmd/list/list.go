@@ -1,11 +1,15 @@
 package list
 
 import (
+	"encoding/json"
 	"fmt"
 
 	"github.com/rhysmah/CLI-Note-App/cmd/root"
 	"github.com/rhysmah/CLI-Note-App/db"
+	"github.com/rhysmah/CLI-Note-App/models"
 	"github.com/spf13/cobra"
+
+	bolt "go.etcd.io/bbolt"
 )
 
 const (
@@ -37,7 +41,7 @@ func ListCommand() *cobra.Command {
 			order, _ := cmd.Flags().GetBool(orderFlag)
 			orderBy := convertToSortOrder(order)
 
-			notes, err := db.GetNotes(root.NotesDB)
+			notes, err := getNotes(root.NotesDB)
 			if err != nil {
 				return fmt.Errorf("error opening database")
 			}
@@ -61,8 +65,6 @@ func ListCommand() *cobra.Command {
 	return cmd
 }
 
-// TODO: create a note print function.
-
 func convertToSortBy(sort string) SortBy {
 	switch sort {
 	case "modified":
@@ -85,4 +87,32 @@ func convertToSortOrder(reverse bool) SortOrder {
 	default:
 		return SortOrderAscending
 	}
+}
+
+func getNotes(database *bolt.DB) ([]models.Note, error) {
+	var notes []models.Note
+
+	err := database.View(func(tx *bolt.Tx) error {
+
+		notesBucket := tx.Bucket([]byte(db.NotesBucket))
+		if notesBucket == nil {
+			return fmt.Errorf("bucket %s does not exist", db.NotesBucket)
+		}
+
+		return notesBucket.ForEach(func(k, v []byte) error {
+			var note models.Note
+			if err := json.Unmarshal(v, &note); err != nil {
+				return fmt.Errorf("error reading note data: %w", err)
+			}
+
+			notes = append(notes, note)
+			return nil
+		})
+	})
+
+	if err != nil {
+		return nil, fmt.Errorf("error retrieving note titles: %w", err)
+	}
+
+	return notes, nil
 }
