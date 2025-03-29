@@ -5,28 +5,27 @@ import (
 	"github.com/spf13/cobra"
 )
 
-
 const (
-	editCmdFull = "edit"
+	editCmdFull  = "edit"
 	editCmdShort = "Edit a note"
-	editCmdLong = "Edit a note by opening it in your default text editor"
+	editCmdLong  = "Edit a note by opening it in your default text editor"
 )
 
 // init registers the edit note command with the root command.
 func init() {
-	editCommand :=  EditCommand() 
+	editCommand := EditCommand()
 	root.RootCmd.AddCommand(editCommand)
 }
 
 func EditCommand() {
 	cmd := &cobra.Command{
-		Use: editCmdFull,
+		Use:   editCmdFull,
 		Short: editCmdShort,
-		Long: editCmdLong,
-		Args: cobra.ExactArgs(1),
+		Long:  editCmdLong,
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-
-		}
+			return nil
+		},
 	}
 }
 
@@ -42,5 +41,5 @@ func EditCommand() {
 // We clean up the temporary file
 
 func editNote() {
-	
+
 }
