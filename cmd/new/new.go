@@ -86,6 +86,9 @@ func StoreNoteInDB(note models.Note, database *bolt.DB) error {
 	})
 }
 
+// StoreNoteContent saves a note to the database within an existing transaction.
+// It marshals the note to JSON and stores it using the note's ID as the key.
+// Returns an error if the bucket doesn't exist, JSON marshaling fails, or the database operation fails.
 func StoreNoteContent(tx *bolt.Tx, note models.Note) error {
 	bucket := tx.Bucket([]byte(db.NotesBucket))
 
@@ -103,6 +106,9 @@ func StoreNoteContent(tx *bolt.Tx, note models.Note) error {
 	return nil
 }
 
+// StoreNoteTitle stores a mapping from note title to note ID in the titles bucket.
+// It allows notes to be looked up by their titles.
+// The function expects to be called within an existing bolt transaction.
 func StoreNoteTitle(tx *bolt.Tx, note models.Note) error {
 	bucket := tx.Bucket([]byte(db.NotesTitleBucket))
 
