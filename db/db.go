@@ -1,13 +1,11 @@
 package db
 
 import (
-	"encoding/json"
 	"fmt"
 	"os"
 	"path/filepath"
 	"time"
 
-	"github.com/rhysmah/CLI-Note-App/models"
 	bolt "go.etcd.io/bbolt"
 )
 
@@ -91,32 +89,4 @@ func createNoteTitleBucket(db *bolt.DB) error {
 		}
 		return nil
 	})
-}
-
-func GetNotes(database *bolt.DB) ([]models.Note, error) {
-	var notes []models.Note
-
-	err := database.View(func(tx *bolt.Tx) error {
-
-		notesBucket := tx.Bucket([]byte(NotesBucket))
-		if notesBucket == nil {
-			return fmt.Errorf("bucket %s does not exist", NotesBucket)
-		}
-
-		return notesBucket.ForEach(func(k, v []byte) error {
-			var note models.Note
-			if err := json.Unmarshal(v, &note); err != nil {
-				return fmt.Errorf("error reading note data: %w", err)
-			}
-
-			notes = append(notes, note)
-			return nil
-		})
-	})
-
-	if err != nil {
-		return nil, fmt.Errorf("error retrieving note titles: %w", err)
-	}
-
-	return notes, nil
 }
