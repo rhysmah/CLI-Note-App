@@ -3,6 +3,10 @@ package edit
 import (
 	"encoding/json"
 	"fmt"
+	"os"
+	"os/exec"
+	"runtime"
+	"time"
 
 	"github.com/rhysmah/CLI-Note-App/cmd/root"
 	"github.com/rhysmah/CLI-Note-App/db"
@@ -38,24 +42,55 @@ func EditCommand() *cobra.Command {
 				return fmt.Errorf("error retrieving note %q: %w", noteTitle, err)
 			}
 
-			fmt.Println(note.Title)
+			// Create temporary file to writed data
+			tempFile, err := os.CreateTemp("", "temp-file-*.txt")
+			if err != nil {
+				return fmt.Errorf("error creating temp file: %w", err)
+			}
+			defer tempFile.Close()
+			defer os.Remove(tempFile.Name())
+
+			// Copy data from current note to temp file
+			if _, err := tempFile.WriteString(note.Content); err != nil {
+				return fmt.Errorf("error writing to temp file: %w", err)
+			}
+
+			editor := determineEditor()
+			command := exec.Command(editor, tempFile.Name())
+			command.Stdin = os.Stdin
+			command.Stdout = os.Stdout
+			command.Stderr = os.Stderr
+
+			if err := command.Run(); err != nil {
+				return fmt.Errorf("error running editor: %w", err)
+			}
+
+			// Read back the edited file
+			editedContent, err := os.ReadFile(tempFile.Name())
+			if err != nil {
+				return fmt.Errorf("error reading edited file: %w", err)
+			}
+
+			// Check if content changed
+			if string(editedContent) != note.Content {
+				note.Content = string(editedContent)
+				note.ModifiedAt = time.Now()
+
+				// Save the updated note
+				if err := updateNote(note, root.NotesDB); err != nil {
+					return fmt.Errorf("error saving updated note: %w", err)
+				}
+
+				fmt.Println("Note updated successfully.")
+			} else {
+				fmt.Println("No changes made to note.")
+			}
 
 			return nil
 		},
 	}
 	return cmd
 }
-
-// TODO:
-// User runs: notes edit "My Note Title"
-// We retrieve the note from the database
-// We create a temporary file with the note's content
-// We determine which editor to use
-// We open the editor with the temporary file
-// User makes changes and closes the editor
-// We read the modified content
-// If changes were made, we update the note in the database
-// We clean up the temporary file
 
 func retrieveNote(noteTitle string, database *bolt.DB) (models.Note, error) {
 	noteID, err := getNoteIDByTitle(noteTitle, database)
@@ -117,21 +152,59 @@ func getNoteContent(noteID string, database *bolt.DB) (models.Note, error) {
 	return retrievedNote, nil
 }
 
-// func getNote(note string, database *bolt.DB) (models.Note, error) {
+func updateNote(note models.Note, database *bolt.DB) error {
+	return database.Update(func(tx *bolt.Tx) error {
+		// Get the notes bucket
+		notesBucket := tx.Bucket([]byte(db.NotesBucket))
+		if notesBucket == nil {
+			return fmt.Errorf("bucket %s does not exist", db.NotesBucket)
+		}
 
-// 	err := database.Update(func(tx *bolt.Tx) error {
+		// Marshal the updated note to JSON
+		noteJSON, err := json.Marshal(note)
+		if err != nil {
+			return fmt.Errorf("failed to marshal note: %w", err)
+		}
 
-// 		notesTitleBucket := tx.Bucket([]byte(db.NotesTitleBucket))
-// 		if notesTitleBucket == nil {
-// 			return fmt.Errorf("bucket %s does not exist", db.NotesTitleBucket)
-// 		}
+		// Store the updated note
+		if err := notesBucket.Put([]byte(note.ID), noteJSON); err != nil {
+			return fmt.Errorf("failed to store note: %w", err)
+		}
 
-// 		var noteTitle string
+		return nil
+	})
+}
 
-// 		notesBucket := tx.Bucket([]byte(db.NotesBucket))
-// 		if notesBucket == nil {
-// 			return fmt.Errorf("bucket %s does not exist", db.NotesBucket)
-// 		}
+func determineEditor() string {
+	if editor := os.Getenv("EDITOR"); editor != "" {
+		return editor
+	}
 
-// 	})
-// }
+	switch runtime.GOOS {
+	case "windows":
+		return "notepad"
+	case "darwin": // macOS
+		// Try terminal-based editors first on macOS
+		for _, editor := range []string{"nano", "vim", "vi"} {
+			if _, err := exec.LookPath(editor); err == nil {
+				return editor
+			}
+		}
+
+		// Fall back to TextEdit if available
+		if _, err := exec.LookPath("TextEdit"); err == nil {
+			return "open -a TextEdit"
+		}
+
+		// Last resort
+		return "nano"
+	default: // Linux and others
+		// Try common editors
+		for _, editor := range []string{"nano", "vim", "vi", "emacs"} {
+			if _, err := exec.LookPath(editor); err == nil {
+				return editor
+			}
+		}
+		return "nano" // Default
+	}
+}
