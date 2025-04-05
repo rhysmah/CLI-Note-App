@@ -184,7 +184,6 @@ func determineEditor() string {
 	case "windows":
 		return "notepad"
 	case "darwin": // macOS
-		// Try terminal-based editors first on macOS
 		for _, editor := range []string{"nano", "vim", "vi"} {
 			if _, err := exec.LookPath(editor); err == nil {
 				return editor
