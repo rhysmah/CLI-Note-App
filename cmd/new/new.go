@@ -38,10 +38,21 @@ func NewCommand() *cobra.Command {
 		Long:  createCmdDesc,
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
+			noteTitle := args[0]
+
+			exists, err := checkIfNoteExists(noteTitle, root.NotesDB)
+			if err != nil {
+				return fmt.Errorf("error checking if note already exists: %w", err)
+			}
+			if exists {
+				return fmt.Errorf("note %q already exists!\nPlease choose another name for your note", noteTitle)
+			}
+
 			note, err := createNote(args[0])
 			if err != nil {
 				return fmt.Errorf("error creating note: %w", err)
 			}
+
 			if err = StoreNoteInDB(note, root.NotesDB); err != nil {
 				return fmt.Errorf("error saving note to database: %w", err)
 			}
@@ -49,6 +60,23 @@ func NewCommand() *cobra.Command {
 		},
 	}
 	return cmd
+}
+
+func checkIfNoteExists(title string, database *bolt.DB) (bool, error) {
+	var exists bool
+	err := database.View(func(tx *bolt.Tx) error {
+
+		bucket := tx.Bucket([]byte(db.NotesTitleBucket))
+		if bucket == nil {
+			return fmt.Errorf("error finding bucket %q", db.NotesTitleBucket)
+		}
+
+		val := bucket.Get([]byte(title))
+		exists = val != nil
+		return nil
+
+	})
+	return exists, err
 }
 
 // createNote instantiates a new Note with the given title and validates it.
@@ -59,7 +87,6 @@ func createNote(title string) (models.Note, error) {
 		Content:    "",
 		CreatedAt:  time.Now(),
 		ModifiedAt: time.Now(),
-		Tags:       []string{},
 	}
 
 	validator := newValidator()
@@ -79,7 +106,7 @@ func StoreNoteInDB(note models.Note, database *bolt.DB) error {
 		if err := StoreNoteTitle(tx, note); err != nil {
 			return fmt.Errorf("error storing note %q in database: %w", note.Title, err)
 		}
-		fmt.Printf("Note %q successfully added to database!\nUse 'cli-note edit %s to open your default text editor and start writing!'\n", note.Title, note.Title)
+		fmt.Printf("Note %q successfully added to database!\nUse 'cli-note edit %s' to open your default text editor and start writing!'\n", note.Title, note.Title)
 		return nil
 	})
 }
