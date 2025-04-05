@@ -52,8 +52,6 @@ func NewCommand() *cobra.Command {
 }
 
 // createNote instantiates a new Note with the given title and validates it.
-// It generates a UUID, sets creation and modification times, and initializes
-// an empty content and tags slice.
 func createNote(title string) (models.Note, error) {
 	newNote := models.Note{
 		ID:         uuid.New().String(),
@@ -81,7 +79,7 @@ func StoreNoteInDB(note models.Note, database *bolt.DB) error {
 		if err := StoreNoteTitle(tx, note); err != nil {
 			return fmt.Errorf("error storing note %q in database: %w", note.Title, err)
 		}
-		fmt.Printf("Added note %q to database\n", note.Title)
+		fmt.Printf("Note %q successfully added to database! Use 'cli-note edit %s to open your default text editor and start writing!'\n", note.Title, note.Title)
 		return nil
 	})
 }
