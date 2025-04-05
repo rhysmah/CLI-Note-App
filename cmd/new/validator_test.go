@@ -111,7 +111,7 @@ func TestValidateNoteTitleCharacters(t *testing.T) {
 		},
 		{
 			name:      "Title Has Illegal Greater Than",
-			noteTitle: "note\"",
+			noteTitle: "note>",
 			wantErr:   true,
 		},
 		{
