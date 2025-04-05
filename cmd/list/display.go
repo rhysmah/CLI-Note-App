@@ -17,7 +17,7 @@ const (
 	alphabetical        = "A - Z"
 	reverseAlphabetical = "Z - A"
 	newestToOldest      = "Newest to Oldest"
-	oldestToNewest      = "OldestToNewest"
+	oldestToNewest      = "Oldest to Newest"
 )
 
 const (
