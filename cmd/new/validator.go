@@ -30,7 +30,6 @@ func newValidator() *validator.Validator[models.Note] {
 // validateNoteTitle checks if the note's title meets the required criteria:
 // - Does not exceed the character limit
 // - Does not contain illegal characters
-// Returns an error if validation fails.
 func validateNoteTitleLength(note models.Note) error {
 	noteNameTrimmed := strings.TrimSpace(note.Title)
 
@@ -45,7 +44,7 @@ func validateNoteTitleLength(note models.Note) error {
 	return nil
 }
 
-// checkForIllegalCharacters verifies that the note name doesn't contain any
+// validateNoteTitleCharacters verifies that the note name doesn't contain any
 // forbidden characters defined in illegalChars. Returns an error listing any
 // illegal characters found.
 func validateNoteTitleCharacters(note models.Note) error {
