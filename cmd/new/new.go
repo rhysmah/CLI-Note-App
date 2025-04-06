@@ -106,7 +106,7 @@ func StoreNoteInDB(note models.Note, database *bolt.DB) error {
 		if err := StoreNoteTitle(tx, note); err != nil {
 			return fmt.Errorf("error storing note %q in database: %w", note.Title, err)
 		}
-		fmt.Printf("Note %q successfully added to database!\nUse 'cli-note edit %s' to open your default text editor and start writing!'\n", note.Title, note.Title)
+		fmt.Printf("Note %q successfully added to database!\nUse 'cli-note edit %s' to open your default text editor and start writing!\n", note.Title, note.Title)
 		return nil
 	})
 }
