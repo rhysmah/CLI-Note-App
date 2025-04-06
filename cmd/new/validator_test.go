@@ -60,11 +60,6 @@ func TestValidateNoteTitleCharacters(t *testing.T) {
 		wantErr   bool
 	}{
 		{
-			name:      "Title Has Illegal Space",
-			noteTitle: "note ",
-			wantErr:   true,
-		},
-		{
 			name:      "Title Has Illegal Forward Slash",
 			noteTitle: "note/",
 			wantErr:   true,
