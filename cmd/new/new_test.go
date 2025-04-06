@@ -82,3 +82,5 @@ func TestStoreNoteInDB_Error(t *testing.T) {
 		t.Error("Expected error when buckets don't exist, got nil")
 	}
 }
+
+// Add test to check for duplicate note name
