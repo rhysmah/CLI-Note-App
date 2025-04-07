@@ -73,3 +73,40 @@ interface, yet to be named, that will define the methods that the `Note` struct 
 
 [21 Mar 2025]
 
+
+
+## Go Testing
+
+[6 April 2025]
+
+Referencing the book [Learning Go](https://learning.oreilly.com/library/view/learning-go-2nd/9781098139285/ch15.html)
+
+This goes over some basic testing concepts.
+
+### Testing Overview
+
+Go testing includes a library, called `testing`, and a tool, called `go test`, which runs tests and generates reports.
+
+To write tests, do the following:
+
+1. Create a file with the suffix `_test.go` in the same package as the code to be tested.
+2. Every test is prepended with the `Test_` prefix.
+3. Test functions take a single argument, `t`, which is of type `*testing.T`. These tests never return a value.
+
+A Go idiom: publically available functions to be tested are named `TestFuncName`, and private functions are named `Test_funcName`. 
+
+### Reporting Failures
+There are two ways to report errors: `Error` and `Errorf`; these are equivalent to `print` and `printf`.
+
+In general, use `Errorf`, because it allows you to specify details about the error -- what was expected and what was received. For example:
+
+```go
+func TestAdd(t *testing.T) {
+    result := Add(1, 2)
+    if result != 3 {
+        t.Errorf("Expected 3, but got %d", result)
+    }
+}
+```
+
+### Table Tests
