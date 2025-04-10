@@ -117,8 +117,8 @@ Go allows you to save a test report to a file, then view that file in the browse
 
 ```
 # Run the tests and save report to file 'c.out'
-go test -coverprofile=c.out 
+go test -coverprofile=.test/c.out 
 
 # View the report in the browser
-go tool cover -html=c.out
+go tool cover -html=.test/c.out
 ```
