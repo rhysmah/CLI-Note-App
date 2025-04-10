@@ -1,11 +1,14 @@
 package new
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 	"time"
 
+	"github.com/rhysmah/CLI-Note-App/cmd/root"
 	"github.com/rhysmah/CLI-Note-App/testutil"
 
 	bolt "go.etcd.io/bbolt"
@@ -83,4 +86,38 @@ func TestStoreNoteInDB_Error(t *testing.T) {
 	}
 }
 
-// Add test to check for duplicate note name
+func TestPreventDuplicateNoteInsertion(t *testing.T) {
+	// Set up test database
+	testDB, _, cleanup := testutil.SetupTestDB(t)
+	defer cleanup()
+
+	originalDB := root.NotesDB
+	root.NotesDB = testDB
+	defer func() { root.NotesDB = originalDB }()
+
+	testNoteArg := []string{"test_note"}
+
+	// Simulation: execute the command with a title
+	newCmd := NewCommand()
+	newCmd.SetArgs(testNoteArg)
+	err := newCmd.Execute()
+	if err != nil {
+		t.Fatalf("Failed to create note: %v", err)
+	}
+
+	// Create new command that should fail
+	newCmd = NewCommand()
+	newCmd.SetArgs(testNoteArg)
+	err = newCmd.Execute()
+
+	// Should receive note about duplicate note name
+	if err == nil {
+		t.Error("Should have received duplicate note error; received no error")
+	}
+
+	// Check that correct error was thrown
+	if err != nil && !strings.Contains(err.Error(), "already exists") {
+		fmt.Println(err.Error())
+		t.Errorf("Should have mentioned error about note existing: %v", err)
+	}
+}
