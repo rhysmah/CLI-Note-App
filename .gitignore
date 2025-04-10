@@ -24,3 +24,6 @@ out/
 # Log files
 note_*.txt
 note-*
+
+# Test files
+*.outs
