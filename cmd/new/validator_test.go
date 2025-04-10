@@ -150,8 +150,8 @@ func TestNoteValidator(t *testing.T) {
 			wantErr: false,
 		},
 		{
-			name: "Valid note with spaces",
-			Note: models.Note{Title: "title with spaces"},
+			name:    "Valid note with spaces",
+			Note:    models.Note{Title: "title with spaces"},
 			wantErr: false,
 		},
 		{
