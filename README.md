@@ -110,3 +110,15 @@ func TestAdd(t *testing.T) {
 ```
 
 ### Table Tests
+
+### Test Table Report
+
+Go allows you to save a test report to a file, then view that file in the browser. To do this, follow these steps:
+
+```
+# Run the tests and save report to file 'c.out'
+go test -coverprofile=c.out 
+
+# View the report in the browser
+go tool cover -html=c.out
+```
