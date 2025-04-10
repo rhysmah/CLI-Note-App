@@ -21,7 +21,7 @@ const (
 )
 
 const (
-	dateTimeWidth = 18
+	dateTimeWidth = 17
 	lineSymbol    = "-"
 	separator     = "  |  "
 )
