@@ -4,7 +4,7 @@ import "time"
 
 // Note represents a single note entry.
 // It contains simple data: a title, content, and tags.
-// It contains metadata: an identifer, creation, and modification timestamps.
+// It contains metadata: an identifier, creation, and modification timestamps.
 // The Note struct implements JSON serialization through struct tags.
 type Note struct {
 	ID         string    `json:"id"`

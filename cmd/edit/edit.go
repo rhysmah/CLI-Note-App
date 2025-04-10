@@ -42,7 +42,7 @@ func EditCommand() *cobra.Command {
 				return fmt.Errorf("error retrieving note %q: %w", noteTitle, err)
 			}
 
-			// Create temporary file to writed data
+			// Create temporary file to write data
 			tempFile, err := os.CreateTemp("", "temp-file-*.txt")
 			if err != nil {
 				return fmt.Errorf("error creating temp file: %w", err)

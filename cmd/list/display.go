@@ -110,7 +110,7 @@ func formatDateTime(dt time.Time) string {
 }
 
 // Returns a string describing how the data is ordered.
-// i.e., A - Z (if by title), newest to olders (if by a date)
+// i.e., A - Z (if by title), newest to oldest (if by a date)
 func getOrderString(sort SortBy, order SortOrder) string {
 	if sort == SortByTitle {
 		if order == SortOrderAscending {

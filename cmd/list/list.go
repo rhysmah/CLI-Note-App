@@ -26,7 +26,7 @@ func init() {
 	root.RootCmd.AddCommand(listCmd)
 }
 
-// NewCommand creates and returns a cobra.Command for creating new notes.
+// ListCommand NewCommand creates and returns a cobra.Command for creating new notes.
 // The command requires exactly one argument: the note title.
 func ListCommand() *cobra.Command {
 	cmd := &cobra.Command{

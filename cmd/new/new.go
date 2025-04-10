@@ -96,7 +96,7 @@ func createNote(title string) (models.Note, error) {
 	return newNote, nil
 }
 
-// storeNoteInDB persists the given note in the BoltDB database.
+// StoreNoteInDB persists the given note in the BoltDB database.
 // It marshals the note to JSON and stores it using the note's ID as the key.
 func StoreNoteInDB(note models.Note, database *bolt.DB) error {
 	return database.Update(func(tx *bolt.Tx) error {
