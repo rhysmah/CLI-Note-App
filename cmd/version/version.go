@@ -20,6 +20,6 @@ var VersionCmd = &cobra.Command{
 	Use:   "version",
 	Short: "Print the version number",
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Printf("%s  |  %s\n", AppName, AppVersion)
+		fmt.Printf("%s  |  v%s\n", AppName, AppVersion)
 	},
 }
