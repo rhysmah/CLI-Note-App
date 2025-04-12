@@ -8,6 +8,7 @@ import (
 	"github.com/rhysmah/CLI-Note-App/db"
 	"github.com/rhysmah/CLI-Note-App/models"
 	"github.com/rhysmah/CLI-Note-App/testutil"
+
 	bolt "go.etcd.io/bbolt"
 )
 
