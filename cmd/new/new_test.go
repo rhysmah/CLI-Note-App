@@ -48,14 +48,13 @@ func TestInvalidNote(t *testing.T) {
 }
 
 func TestStoreNoteInDB(t *testing.T) {
-	testDb, _, cleanup := testutil.SetupTestDB(t)
-	defer cleanup()
+	testDb, _ := testutil.SetupTestDB(t)
 
 	note := testutil.CreateTestNote()
 
 	err := StoreNoteInDB(note, testDb)
 	if err != nil {
-		t.Errorf("Error adding note to database: %v", err)
+		t.Errorf("error adding note to database: %v", err)
 	}
 
 	testutil.TestNoteContentSaved(t, note, testDb)
@@ -68,34 +67,24 @@ func TestStoreNoteInDB_Error(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Failed to create temp dir: %v", err)
 	}
-	defer func() {
-		err := os.RemoveAll(tempDir)
-		if err != nil {
-			// Need logging to properly capture this
-			fmt.Println(err)
+
+	t.Cleanup(func() {
+		if err := os.RemoveAll(tempDir); err != nil {
+			t.Errorf("Failed to remove temp dir: %v", err)
 		}
-	}()
+	})
 
 	dbPath := filepath.Join(tempDir, "test.db")
 	testDb, err := bolt.Open(dbPath, 0600, &bolt.Options{Timeout: 1 * time.Second})
 	if err != nil {
 		t.Fatalf("Failed to open test DB: %v", err)
 	}
-	defer func() {
-		err := testDb.Close()
-		if err != nil {
-			// Need logging to properly capture this
-			fmt.Println(err)
-		}
-	}()
 
-	defer func() {
-		err := testDb.Close()
-		if err != nil {
-			// Need logging to properly capture this
-			fmt.Println(err)
+	t.Cleanup(func() {
+		if err := testDb.Close(); err != nil {
+			t.Errorf("Failed to close test DB: %v", err)
 		}
-	}()
+	})
 
 	// Should fail since buckets don't exist
 	note := testutil.CreateTestNote()
@@ -108,12 +97,14 @@ func TestStoreNoteInDB_Error(t *testing.T) {
 
 func TestPreventDuplicateNoteInsertion(t *testing.T) {
 	// Set up test database
-	testDB, _, cleanup := testutil.SetupTestDB(t)
-	defer cleanup()
+	testDB, _ := testutil.SetupTestDB(t)
 
 	originalDB := root.NotesDB
 	root.NotesDB = testDB
-	defer func() { root.NotesDB = originalDB }()
+
+	t.Cleanup(func() {
+		root.NotesDB = originalDB
+	})
 
 	testNoteArg := []string{"test_note"}
 
