@@ -9,9 +9,7 @@ import (
 	bolt "go.etcd.io/bbolt"
 )
 
-var (
-	NotesDB *bolt.DB
-)
+var NotesDB *bolt.DB
 
 // rootCmd represents the base command when called without any subcommands
 var RootCmd = &cobra.Command{
