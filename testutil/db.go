@@ -101,7 +101,7 @@ func TestNoteTitleSaved(t *testing.T, note models.Note, database *bolt.DB) {
 // SetupTestDB creates a temporary BoltDB database for testing purposes.
 // It returns the database connection, the temporary directory path, and a cleanup function.
 // The cleanup function should be deferred by the caller to ensure proper cleanup of resources.
-func SetupTestDB(t *testing.T) (*bolt.DB, string, func()) {
+func SetupTestDB(t *testing.T) (*bolt.DB, string) {
 	testTempDir, err := os.MkdirTemp("", "notes-test-*")
 	if err != nil {
 		t.Fatalf("Couldn't create temp directory: %v", err)
@@ -132,8 +132,6 @@ func SetupTestDB(t *testing.T) (*bolt.DB, string, func()) {
 		return err
 	})
 	if err != nil {
-		testDB.Close()
-		os.RemoveAll(testTempDir)
 		t.Fatalf("Couldn't create %v bucket: %v", db.NotesBucket, err)
 	}
 
@@ -142,15 +140,8 @@ func SetupTestDB(t *testing.T) (*bolt.DB, string, func()) {
 		return err
 	})
 	if err != nil {
-		testDB.Close()
-		os.RemoveAll(testTempDir)
 		t.Fatalf("Couldn't create %v bucket: %v", db.NotesTitleBucket, err)
 	}
 
-	cleanup := func() {
-		testDB.Close()
-		os.RemoveAll(testTempDir)
-	}
-
-	return testDB, testTempDir, cleanup
+	return testDB, testTempDir
 }
