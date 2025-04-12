@@ -1,0 +1,47 @@
+# GoReleaser configuration for CLI-Note-App
+builds:
+  - id: cli-notes
+    binary: cli-notes
+    main: ./main.go
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - darwin
+      - windows
+    goarch:
+      - amd64
+      - arm64
+    # Skip certain combinations if needed
+    ignore:
+      - goos: windows
+        goarch: arm64
+
+archives:
+  - format_overrides:
+      - goos: windows
+        format: zip
+    replacements:
+      darwin: macOS
+      linux: Linux
+      windows: Windows
+      amd64: x86_64
+    files:
+      - README.md
+      - LICENSE*
+      - CHANGELOG*
+      - docs/*
+
+# Generate checksums for verification
+checksum:
+  name_template: 'checksums.txt'
+
+# Automatically generate changelog from git commits
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - '^docs:'
+      - '^test:'
+      - Merge pull request
+      - Merge branch
