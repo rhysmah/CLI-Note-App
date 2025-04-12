@@ -12,8 +12,7 @@ import (
 )
 
 func TestDeleteExistingNote(t *testing.T) {
-	testDb, _, cleanup := testutil.SetupTestDB(t)
-	defer cleanup()
+	testDb, _ := testutil.SetupTestDB(t)
 
 	note := testutil.CreateTestNote()
 
@@ -35,8 +34,7 @@ func TestDeleteExistingNote(t *testing.T) {
 }
 
 func TestDeleteNonExistingNote(t *testing.T) {
-	testDb, _, cleanup := testutil.SetupTestDB(t)
-	defer cleanup()
+	testDb, _ := testutil.SetupTestDB(t)
 
 	note := testutil.CreateTestNote()
 
@@ -55,13 +53,13 @@ func testNoteTitleNotInDB(t *testing.T, note models.Note, database *bolt.DB) {
 
 		if bucket == nil {
 			t.Errorf("Bucket not found; expected %s", db.NotesTitleBucket)
-			return fmt.Errorf("Bucket not found; expected %s", db.NotesTitleBucket)
+			return fmt.Errorf("bucket not found; expected %s", db.NotesTitleBucket)
 		}
 
 		retrievedNote := bucket.Get([]byte(note.Title))
 		if retrievedNote != nil {
 			t.Errorf("Note title found; expected nothing")
-			return fmt.Errorf("Note title found; expected nothing")
+			return fmt.Errorf("note title found; expected nothing")
 		}
 		return nil
 	})
@@ -83,7 +81,7 @@ func testNoteContentNotInDB(t *testing.T, note models.Note, database *bolt.DB) {
 		retrievedNote := bucket.Get([]byte(note.ID))
 		if retrievedNote != nil {
 			t.Errorf("Note found; expected nothing")
-			return fmt.Errorf("Note found; expected nothing")
+			return fmt.Errorf("note found; expected nothing")
 		}
 		return nil
 	})
