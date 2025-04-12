@@ -18,14 +18,16 @@ builds:
         goarch: arm64
 
 archives:
-  - format_overrides:
+  - id: cli-notes
+    format_overrides:
       - goos: windows
         format: zip
-    replacements:
-      darwin: macOS
-      linux: Linux
-      windows: Windows
-      amd64: x86_64
+    name_template: >-
+      {{ .ProjectName }}_{{ .Version }}_
+      {{- title .Os }}_
+      {{- if eq .Arch "amd64" }}x86_64
+      {{- else if eq .Arch "386" }}i386
+      {{- else }}{{ .Arch }}{{ end }}
     files:
       - README.md
       - LICENSE*
@@ -43,5 +45,5 @@ changelog:
     exclude:
       - '^docs:'
       - '^test:'
-      - Merge pull request
-      - Merge branch
+      - 'Merge pull request'
+      - 'Merge branch'
