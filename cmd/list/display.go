@@ -27,7 +27,7 @@ const (
 )
 
 // DisplayNotes renders a formatted table of notes.
-// It displays notes based on the specified sort criteria and order..
+// It displays notes based on the specified sort criteria and order.
 //
 // Parameters:
 //   - notes: The slice of notes to display
