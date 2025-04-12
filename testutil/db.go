@@ -102,14 +102,22 @@ func TestNoteTitleSaved(t *testing.T, note models.Note, database *bolt.DB) {
 // It returns the database connection, the temporary directory path, and a cleanup function.
 // The cleanup function should be deferred by the caller to ensure proper cleanup of resources.
 func SetupTestDB(t *testing.T) (*bolt.DB, string, func()) {
+
 	testTempDir, err := os.MkdirTemp("", "notes-test-*")
 	if err != nil {
 		t.Fatalf("Couldn't create temp directory: %v", err)
 	}
 
+	// Deferred to remove temp test directory
+	t.Cleanup(func() {
+		if err := os.RemoveAll(testTempDir); err != nil {
+			t.Errorf("Couldn't remove temp directory: %v", err)
+		}
+	})
+
 	testDBPath := filepath.Join(testTempDir, "test.db")
 
-	testDB, err := bolt.Open(testDBPath, db.DbReadWritePermissions, &bolt.Options{Timeout: 1 * time.Second})
+	testDB, err := bolt.Open(testDBPath, db.ReadWritePermissions, &bolt.Options{Timeout: 1 * time.Second})
 	if err != nil {
 		os.RemoveAll(testTempDir)
 		t.Fatalf("couldn't create test database for testing: %v", err)
