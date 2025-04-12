@@ -3,6 +3,7 @@ package edit
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"os"
 	"os/exec"
 	"runtime"
@@ -47,8 +48,15 @@ func EditCommand() *cobra.Command {
 			if err != nil {
 				return fmt.Errorf("error creating temp file: %w", err)
 			}
-			defer tempFile.Close()
-			defer os.Remove(tempFile.Name())
+
+			defer func() {
+				if err := tempFile.Close(); err != nil {
+					log.Printf("error closing temp file: %v", err)
+				}
+				if err = os.Remove(tempFile.Name()); err != nil {
+					log.Printf("error removing temp file: %v", err)
+				}
+			}()
 
 			// Copy data from current note to temp file
 			if _, err := tempFile.WriteString(note.Content); err != nil {
