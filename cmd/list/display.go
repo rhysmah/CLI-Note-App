@@ -9,7 +9,7 @@ import (
 )
 
 const (
-	dateTimeFormat = "Jan 2, 2006 15:04"
+	dateTimeFormat = "Jan 02, 2006 15:04"
 	headerFileName = "File Name"
 	headerCreated  = "Created Date"
 	headerModified = "Modified Date"
