@@ -3,7 +3,7 @@
 .DS_Store?
 ._*
 
-# IDE - VSCode
+# IDE
 .vscode/
 *.code-workspace
 
@@ -11,6 +11,7 @@
 dist/
 build/
 out/
+.idea/
 
 # Environment variables
 .env
