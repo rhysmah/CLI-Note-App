@@ -10,13 +10,6 @@ type Validator[T any] struct {
 	Rules []ValidationRule[T]
 }
 
-// NewValidator creates a new Validator instance for type T with an empty rule set.
-func NewValidator[T any]() *Validator[T] {
-	return &Validator[T]{
-		Rules: []ValidationRule[T]{},
-	}
-}
-
 // Run executes all validation rules in sequence.
 // It returns the first error encountered or nil if all validations pass.
 func (v *Validator[T]) Run(opts T) error {
