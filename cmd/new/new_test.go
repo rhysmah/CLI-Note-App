@@ -68,13 +68,27 @@ func TestStoreNoteInDB_Error(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Failed to create temp dir: %v", err)
 	}
-	defer os.RemoveAll(tempDir)
+	defer func() {
+		err := os.RemoveAll(tempDir)
+		if err != nil {
+			// Need logging to properly capture this
+			fmt.Println(err)
+		}
+	}()
 
 	dbPath := filepath.Join(tempDir, "test.db")
 	testDb, err := bolt.Open(dbPath, 0600, &bolt.Options{Timeout: 1 * time.Second})
 	if err != nil {
 		t.Fatalf("Failed to open test DB: %v", err)
 	}
+	defer func() {
+		err := testDb.Close()
+		if err != nil {
+			// Need logging to properly capture this
+			fmt.Println(err)
+		}
+	}()
+
 	defer testDb.Close()
 
 	// Should fail since buckets don't exist
