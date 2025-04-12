@@ -9,6 +9,7 @@ import (
 	_ "github.com/rhysmah/CLI-Note-App/cmd/list"
 	_ "github.com/rhysmah/CLI-Note-App/cmd/new"
 	"github.com/rhysmah/CLI-Note-App/cmd/root"
+	_ "github.com/rhysmah/CLI-Note-App/cmd/version"
 )
 
 func main() {
