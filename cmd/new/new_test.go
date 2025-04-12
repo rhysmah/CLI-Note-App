@@ -89,7 +89,13 @@ func TestStoreNoteInDB_Error(t *testing.T) {
 		}
 	}()
 
-	defer testDb.Close()
+	defer func() {
+		err := testDb.Close()
+		if err != nil {
+			// Need logging to properly capture this
+			fmt.Println(err)
+		}
+	}()
 
 	// Should fail since buckets don't exist
 	note := testutil.CreateTestNote()
