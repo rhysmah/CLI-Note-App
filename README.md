@@ -1,5 +1,32 @@
 # CLI-Note-App
 
+# CLI Notes
+
+A simple command-line note-taking application.
+
+## Features
+
+- Create new notes
+- Edit existing notes
+- Delete notes
+- List all notes
+- Uses a local database stored in your home directory
+
+## Installation
+
+### macOS and Linux
+
+```bash
+# Download the appropriate archive for your system
+tar -xzf cli-notes_X.X.X_OS_ARCH.tar.gz
+
+# Move the binary to a location in your PATH
+sudo mv cli-notes /usr/local/bin/
+
+# Make it executable
+sudo chmod +x /usr/local/bin/cli-notes
+```
+
 ## Overview
 
 [24 Feb 2025]
