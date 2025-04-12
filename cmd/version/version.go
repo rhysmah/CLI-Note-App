@@ -8,7 +8,7 @@ import (
 
 const (
 	AppName    = "cli-notes"
-	AppVersion = "0.1.0" // Semantic versioning (Major.Minor.Patch)
+	AppVersion = "0.1.1" // Semantic versioning (Major.Minor.Patch)
 )
 
 func init() {
